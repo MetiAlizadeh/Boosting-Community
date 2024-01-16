@@ -31,7 +31,7 @@ module.exports = {
       await dbClient.connect();
       const db = dbClient.db('boostingcommunity');
       const ordersCollection = db.collection('orders');
-      const categorysCollection = db.collection('categorys');
+      const categorysCollection = db.collection('categories');
       const channelsCollection = db.collection('channels');
 
       // Check if the user is the adv (advertiser) of the boost

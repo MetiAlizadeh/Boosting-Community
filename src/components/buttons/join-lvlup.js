@@ -1,45 +1,59 @@
 const { ButtonInteraction, PermissionsBitField, EmbedBuilder } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 require('dotenv').config();
+const { MongoClient } = require('mongodb');
 
 module.exports = {
     customId: 'join-lvlup',
     run: async (client, interaction) => {
-        if (!isUserEligible(interaction)) {
+        const dbClient = new MongoClient(process.env.MONGODB_URI);
+        try {
+            await dbClient.connect();
+            const db = dbClient.db('boostingcommunity');
+            const rolesCollection = db.collection('roles');
+
+            const levelupRoleData = await rolesCollection.findOne({ key: 'levelupRole' });
+            if (!levelupRoleData || !levelupRoleData.roleId) {
+                return interaction.reply({ content: 'Level-up role not set up.', ephemeral: true });
+            }
+            const levelupRoleId = levelupRoleData.roleId;
+
+            // Check if the user is eligible
+            if (!interaction.member.roles.cache.has(levelupRoleId)) {
+                return interaction.reply({ content: 'You do not have the required role.', ephemeral: true });
+            }
+
+            const message = await fetchInteractionMessage(client, interaction);
+            if (isUserAlreadyListed(interaction, message)) {
+                await interaction.reply({
+                    content: 'You are already in the list.',
+                    ephemeral: true
+                });
+                return;
+            }
+
+            const updatedEmbed = updateBoostersListEmbed(message, interaction);
+            await message.edit({ embeds: [updatedEmbed] });
             await interaction.reply({
-                content: 'You do not have the required role.',
+                content: "Joined",
                 ephemeral: true
             });
-            return;
+
+            setTimeout(async () => {
+                const finalMessage = await fetchInteractionMessage(client, interaction);
+                const updatedEmbedFinal = sortBoostersListEmbed(finalMessage);
+                await finalMessage.edit({ embeds: [updatedEmbedFinal] });
+            }, 30000);
+        } catch (error) {
+            console.error('Error in join-lvlup interaction:', error);
+        } finally {
+            await dbClient.close();
         }
 
-        const message = await fetchInteractionMessage(client, interaction);
-        if (isUserAlreadyListed(interaction, message)) {
-            await interaction.reply({
-                content: 'You are already in the list.',
-                ephemeral: true
-            });
-            return;
-        }
-
-        const updatedEmbed = updateBoostersListEmbed(message, interaction);
-        await message.edit({ embeds: [updatedEmbed] });
-        await interaction.reply({
-            content: "Joined",
-            ephemeral: true
-        });
-
-        setTimeout(async () => {
-            const finalMessage = await fetchInteractionMessage(client, interaction);
-            const updatedEmbedFinal = sortBoostersListEmbed(finalMessage);
-            await finalMessage.edit({ embeds: [updatedEmbedFinal] });
-        }, 30000);
+        
     }
 };
 
-function isUserEligible(interaction) {
-    return interaction.member.roles.cache.has(process.env.LVLUP_BOOSTER) || interaction.member.permissions.has(PermissionsBitField.Flags.Administrator);
-}
 
 async function fetchInteractionMessage(client, interaction) {
     const targetChannel = client.channels.cache.get(interaction.channelId);

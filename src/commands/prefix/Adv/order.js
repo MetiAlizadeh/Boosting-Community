@@ -129,7 +129,7 @@ module.exports = {
                 const logChannel = client.channels.cache.get(finishedLogChannelId);
                 // Send a log message
                 logChannel.send({
-                    content: `Boost created by ${message.author} - ${message.channel.toString()}`,
+                    content: `Boost created by ${message.author} - ${createdChannel.toString()}`,
                 });
             }
 

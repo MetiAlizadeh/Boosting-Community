@@ -96,7 +96,7 @@ module.exports = {
 function createActionRow() {
   // Create buttons for the message
   const joinButton = new ButtonBuilder().setCustomId('join-lvlup').setLabel('🎲').setStyle(ButtonStyle.Success);
-  const deleteButton = new ButtonBuilder().setCustomId('finish-lvlup').setLabel('Delete').setStyle(ButtonStyle.Danger);
+  const deleteButton = new ButtonBuilder().setCustomId('cancel-levelup').setLabel('Cancel').setStyle(ButtonStyle.Danger);
   return new ActionRowBuilder().addComponents(joinButton, deleteButton);
 }
 
