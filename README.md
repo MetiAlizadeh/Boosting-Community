@@ -7,14 +7,18 @@ This Discord bot is designed to enhance community engagement on Discord servers,
 - **Automatic Role Assignment:** Assigns Discord roles to users based on their scores from external APIs (e.g., raider.io scores for gaming).
 - **Dynamic Channel Management:** Creates and manages specific Discord channels for various community activities.
 - **Database Integration:** Utilizes MongoDB for robust data management.
-- **Custom Commands:** Includes several custom commands for managing community activities, such as `order`, `team`, and `done`.
-
+- **Custom Commands:** Includes several custom commands for managing community activities, such as `order`, `team`, `done`, `levelup`, `balance`, `pay`, `adv`, and `change`.
+  
 ## Custom Commands
 
 - `order`: Creates a new order with details specified in the command arguments and stores it in the database.
 - `team`: Updates an existing order with a team of boosters and edits the corresponding message.
 - `done`: Processes a completed boost order, updates booster balances, and notifies involved users.
-
+- `levelup`: Manages level-up boosts, including role eligibility and booster assignment.
+- `balance`: Allows users to check their current balance within the community.
+- `pay`: Enables users to transfer funds to other members.
+- `adv`: Adds or removes advertisers from the system.
+- `change`: Changes the assigned Discord channel for specific functionalities.
 ## Setup and Installation
 
 ### Prerequisites
@@ -54,5 +58,6 @@ The bot listens for specific commands and triggers in messages to perform variou
 Contributions to this project are welcome. Please fork the repository and submit a pull request with your changes.
 
 # To-Do List
-- [ ]  Implement attendance command for managing community event participation.
-- [ ]  Develop bank command to handle in-game banking activities or similar functionalities.
+- [x]  Implement attendance command for managing community event participation.
+- [x]  Develop bank command to handle banking activities or similar functionalities.
+- [ ]  Develop Website To Mange Payments
